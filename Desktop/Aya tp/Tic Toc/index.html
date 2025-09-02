@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Tic Tac Toe</title>
+  <style>
+    body {
+        background-color: rgb(114, 64, 230);
+
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+    .board {
+      display: grid;
+      grid-template-columns: repeat(3, 100px);
+      grid-template-rows: repeat(3, 100px);
+      gap: 16px;
+    }
+
+    .cl {
+      background-color: #f0f0f0;
+      font-size: 2em;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+      border: 2px solid #333;
+      color: black;
+      font-weight: 900;
+    }
+    .TIC-TAC {
+        background-color: white;
+        padding: 40px;
+        border-radius: 20px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        row-gap: 20px;
+    }
+    .total-matches {
+        width: 100%;
+        padding: 8px 16px;
+        background-color: rgb(150, 150, 183);
+        border: 1px solid rgb(205, 205, 243);
+        border-radius: 20px;
+
+        text-align: center;
+    }
+    .score {
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+    }
+    .player {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 10px;
+        border: 1px solid black;
+    }
+  </style>
+</head>
+<body>
+<div class="TIC-TAC">
+
+  <h1>Tic Tac Toe</h1>
+  <div class="total-matches">
+    <p>
+        Total Matches :
+        <span id="match-counter">
+            0
+        </span>
+    </p>
+  </div>
+  <div class="board">
+    <div class="cl" data-index="0"></div>
+    <div class="cl" data-index="1"></div>
+    <div class="cl" data-index="2"></div>
+    <div class="cl" data-index="3"></div>
+    <div class="cl" data-index="4"></div>
+    <div class="cl" data-index="5"></div>
+    <div class="cl" data-index="6"></div>
+    <div class="cl" data-index="7"></div>
+    <div class="cl" data-index="8"></div>
+  </div>
+  <div>
+    <button id="clear">Restart</button>
+  </div>
+  <div class="score">
+    <div class="player">
+        <p>Player X :</p>
+        <span id="plyer-score-X">
+            0
+        </span>
+    </div>
+    <div class="player">
+        <p>Player O :</p>
+        <span id="plyer-score-O">
+            0
+        </span>
+    </div>
+  </div>
+</div>
+
+<script>
+
+  const cls = document.querySelectorAll('.cl');
+let currentPlayer = 'X';
+let gameOver = false;
+
+
+const rest = document.getElementById('clear');
+rest.addEventListener('click', () => {
+    cls.forEach(cl => {
+        cl.textContent = '';
+    })
+})
+
+
+const winningPositions = [
+    [0, 1, 2],
+    [3, 4, 5],
+    [6, 7, 8],
+    [0, 3, 6],
+    [1, 4, 7],
+    [2, 5, 8],
+    [0, 4, 8],
+    [2, 4, 6]
+];
+
+cls.forEach(cl => {
+    cl.addEventListener('click', () => {
+        if (cl.textContent !== '' || gameOver) return;
+
+        cl.textContent = currentPlayer;
+
+        if (checkWin(currentPlayer)) {
+
+            gameOver = true;
+            update_players_counter(currentPlayer);
+
+            setTimeout(function () {
+                cls.forEach(cl => {
+                    cl.textContent = '';
+                });
+                gameOver = false;
+            },2000);
+            console.log(currentPlayer + ' wins!');
+
+            return;
+        }
+
+        currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
+    });
+});
+
+function checkWin(player) {
+    return winningPositions.some(combo => {
+        return combo.every(index => {
+            return cls[index].textContent === player;
+        });
+    });
+}
+
+let total_matches =0;
+let xPlayerwins = 0;
+let oPlayerwins = 0;
+
+function update_players_counter(currentPlayer) {
+    if (currentPlayer === 'X') {
+        xPlayerwins++;
+        document.getElementById('plyer-score-' + currentPlayer).textContent = xPlayerwins;
+    }
+    else if (currentPlayer === 'O') {
+        oPlayerwins++;
+        document.getElementById('plyer-score-' + currentPlayer).textContent = oPlayerwins;
+    }
+
+    total_matches++;
+    document.getElementById('match-counter').textContent = total_matches;
+
+}
+
+</script>
+</body>
+</html>
